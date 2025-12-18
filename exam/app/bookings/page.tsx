@@ -1,6 +1,7 @@
 import { getReservation, removeReservation } from "@/lib/Reservation";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
 
 export default async function Bookings() {
     const book = await getReservation()
@@ -47,7 +48,5 @@ export default async function Bookings() {
         ))}
       </div>
     </> 
-
-
   );
 }

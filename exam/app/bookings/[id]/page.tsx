@@ -1,10 +1,11 @@
 import { getReservation, editReservation} from "@/lib/Reservation";
 
+export const dynamic = 'force-dynamic';
 
 export default async function editReservations({params,}: {params: { id: string };}) {
     const { id } = await params;
     const book = await getReservation();
-    const Reservation = book.find(book => book.id === id);
+    const Reservation = book?.find(book => book.id === id);
 
     if (!Reservation) {
     return (
