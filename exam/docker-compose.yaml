@@ -2,50 +2,58 @@ services:
     
 
   db:
-    image: postgres:16
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: hello
-      POSTGRES_DB: mydb
+    image: postgres:16-alpine
+    env_file: .env
+    ports:
+      - "5432:5432"
     volumes:
-      - /var/lib/postgresql/data
-  app:
+      - db_data1:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - db
-    build:
-      context: .
-      target: dev
-    restart: always
-    develop:
-      watch:
-        - path: ./drizzle.config.ts
-          target: /app/drizzle.config.ts
-          action: sync
-        - path: ./package.json
-          action: rebuild
-        - path: ./app
-          target: /app/app
-          action: sync
-        - path: ./db
-          target: /app/db
-          action: sync+restart
-        - path: ./components
-          target: /app/components
-          action: sync
-        - path: ./lib
-          target: /app/lib
-          action: sync
-        - path: ./public
-          target: /app/public
-          action: sync
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgres://root:hello@db:5432/mydb
-      SECRET: your_secret_key_here
-    volumes:
-      - node_modules:/app/node_modules
+  # app:
+  #   depends_on:
+  #     - db
+  #   build:
+  #     context: .
+  #     target: dev
+  #   restart: always
+  #   develop:
+  #     watch:
+  #       - path: ./drizzle.config.ts
+  #         target: /app/drizzle.config.ts
+  #         action: sync
+  #       - path: ./package.json
+  #         action: rebuild
+  #       - path: ./app
+  #         target: /app/app
+  #         action: sync
+  #       - path: ./db
+  #         target: /app/db
+  #         action: sync+restart
+  #       - path: ./components
+  #         target: /app/components
+  #         action: sync
+  #       - path: ./lib
+  #         target: /app/lib
+  #         action: sync
+  #       - path: ./public
+  #         target: /app/public
+  #         action: sync
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     DATABASE_URL: postgres://root:hello@db:5432/mydb
+  #     SECRET: your_secret_key_here
+  #   volumes:
+  #     - node_modules:/app/node_modules
 volumes:
-  db_data:
+  db_data1:
   node_modules:

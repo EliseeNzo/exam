@@ -10,7 +10,7 @@ export default async function Bookings() {
             <h2 className="underline text-xl">All the bookings: </h2>
 
     <div>
-        {book.map((bookings) => (
+        {book?.map((bookings) => (
 			<div key={bookings.id} className="flex justify-center gap-1">
 				<form className="md:w-4xl w-100 min-h-20 border-2 rounded text-indigo-950 m-4 grid grid-cols-8">
 					<div className="col-span-7">
