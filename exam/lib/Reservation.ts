@@ -8,33 +8,36 @@ import { redirect } from "next/navigation";
 
 
 export async function getReservation() {
-
+  try {
     return await db.select().from(reservationTable)
-    
+  } catch (error) {
+
+  }
+
 }
 
 export async function addReservation(form: FormData) {
-    await db.insert(reservationTable).values({
-        name: String(form.get("name")),
-        number: String(form.get("number")),
-        nbrpersone: String(form.get("nbrpersone")),
-        time: String(form.get("time")),
-        done: false,
+  await db.insert(reservationTable).values({
+    name: String(form.get("name")),
+    number: String(form.get("number")),
+    nbrpersone: String(form.get("nbrpersone")),
+    time: String(form.get("time")),
+    done: false,
 
-    })
+  })
 
-    
+
 }
 
 export async function editReservation(form: FormData) {
   await db
     .update(reservationTable)
     .set({
-        name: String(form.get("name")),
-        number: String(form.get("number")),
-        nbrpersone: String(form.get("nbrpersone")),
-        time: String(form.get("time")),
-        done: form.get('done') === 'on',
+      name: String(form.get("name")),
+      number: String(form.get("number")),
+      nbrpersone: String(form.get("nbrpersone")),
+      time: String(form.get("time")),
+      done: form.get('done') === 'on',
     })
     .where(eq(reservationTable.id, String(form.get('id'))))
   redirect((await headers()).get('referer') ?? '/')
