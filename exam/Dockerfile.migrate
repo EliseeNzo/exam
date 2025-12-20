@@ -1,0 +1,17 @@
+FROM node:24-alpine
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (including drizzle-kit which is a dev dependency)
+RUN npm ci
+
+# Copy schema and config files needed for drizzle-kit push
+COPY drizzle.config.ts ./
+COPY db ./db
+COPY drizzle ./drizzle
+
+# Run migrations using drizzle-kit push
+CMD ["npx", "drizzle-kit", "push"]
+

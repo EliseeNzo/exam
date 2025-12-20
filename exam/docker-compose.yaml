@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - db_data1:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   pgadmin:
     image: dpage/pgadmin4:latest
     restart: always
@@ -19,9 +24,20 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - db
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    environment:
+      DATABASE_URL: postgres://root:hello@db:5432/mydb
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
   app:
     depends_on:
-      - db
+      migrate:
+        condition: service_completed_successfully
     build:
       context: .
   #     target: dev
